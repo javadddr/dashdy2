@@ -32,7 +32,7 @@ function Login() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-950">
       <div className="w-full max-w-[450px] space-y-8 rounded-lg border border-gray-700 bg-zinc-900 p-8 shadow-lg">
         <div className="text-center">
-          <img src={Logo} alt="DynamoChart Logo" className="mx-auto h-20 mb-4" />
+          <img src={Logo} alt="DynamoChart Logo" className="mx-auto h-20 mb-3" />
           <h2 className="text-2xl font-bold text-gray-200">Sign in to DynamoChart</h2>
           <p className="text-sm text-gray-400">Enter your password to access the dashboard</p>
         </div>
