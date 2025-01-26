@@ -22,7 +22,7 @@ const keyfrom = import.meta.env.VITE_USER_KEY;
       try {
         const now = new Date();
         const threeMonthsAgo = new Date(now);
-        threeMonthsAgo.setMonth(now.getMonth() - 1);
+        threeMonthsAgo.setMonth(now.getMonth() - 3);
 
         const start = threeMonthsAgo.getTime();
         const end = now.getTime();
