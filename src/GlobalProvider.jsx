@@ -48,7 +48,7 @@ const keyfrom = import.meta.env.VITE_USER_KEY;
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch("https://api.globalpackagetracker.com/user/get", {
+        const response = await fetch("https://api2.globalpackagetracker.com/user/get", {
           headers: { key:import.meta.env.VITE_USER_KEY},
         });
 
