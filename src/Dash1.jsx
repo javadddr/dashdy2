@@ -13,6 +13,8 @@ import SubChangeac2 from "./SubChangeac2";
 import ChatHed from "./ChatHed";
 import Overall from "./Overall";
 import Loading from "./Loading";
+import Mrr1 from "./Mrr1";
+import Mrr2 from "./Mrr2";
 import { useGlobalContext } from "./GlobalProvider";
 
 
@@ -63,8 +65,19 @@ function Dash1() {
             </div>
           </div>
           <Customers />
-         
-         
+          <div className="flex justify-center items-center w-full">
+            <div className="flex flex-col mb-4">
+          
+          <Mrr1/>
+            </div>
+          </div>
+          <div className="flex justify-center items-center w-full">
+            <div className="flex flex-col mb-4">
+          
+            <Mrr2/>
+            </div>
+          </div>
+     
         </>
       )}
     </div>

@@ -24,7 +24,7 @@ const chartConfig = {
 function SubChangeac2() {
   const { shipments, users, subscriptions, invoices,subscriptionsreal,allsubs } = useGlobalContext();
   const [chartData, setChartData] = useState([]);
-
+console.log("allsubsallsubsallsubs",allsubs)
   useEffect(() => {
     if (allsubs && allsubs.length > 0) {
       const activeSubs = allsubs.filter((sub) => sub.status === "canceled");

@@ -107,7 +107,7 @@ function Linein() {
         <CardContent>
           <ChartContainer
             config={chartConfig}
-            className="max-w-[900px] h-[250px]"
+            className="max-w-[800px] h-[250px]"
           >
             <BarChart
               data={chartData}
