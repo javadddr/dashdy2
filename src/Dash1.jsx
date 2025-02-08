@@ -68,13 +68,13 @@ function Dash1() {
           <div className="flex justify-center items-center w-full">
             <div className="flex flex-col mb-4">
           
-          <Mrr1/>
+          <Mrr2/>
             </div>
           </div>
           <div className="flex justify-center items-center w-full">
             <div className="flex flex-col mb-4">
           
-            <Mrr2/>
+            <Mrr1/>
             </div>
           </div>
      
