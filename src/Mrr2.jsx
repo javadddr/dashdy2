@@ -82,7 +82,7 @@ function CustomHeatmap({ data, startDate, endDate, allsubs, setAllsub,onOpen }) 
                 return (
                   <div
                   key={dayIndex}
-                  className={`h-8 w-8 flex items-center justify-center border hover:border-gray-500 text-xs font-bold 
+                  className={`h-6 w-6 flex items-center justify-center border hover:border-gray-500 text-xs font-bold 
                     ${value === 0 ? 'bg-gray-800' : getColorClass(value)} 
                     ${value !== 0 ? 'cursor-pointer' : ''}`}
                   title={`${format(day, "yyyy-MM-dd")}: ${value > 0 ? "+" : ""}${value}€`}
