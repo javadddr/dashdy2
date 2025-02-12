@@ -32,6 +32,7 @@ function Customers() {
   const [selectedCustomerEmail, setSelectedCustomerEmail] = useState(null);
   const rowsPerPage = 10;
   const { shipments, users, subscriptions, invoices,subscriptionsreal } = useGlobalContext();
+  console.log("users",users)
   // Memoize the pages calculation
   const pages = useMemo(() => {
     return subscriptionsreal?.length
@@ -46,6 +47,23 @@ function Customers() {
     return subscriptionsreal?.slice(startIndex, endIndex) || [];
   }, [page, subscriptionsreal]);
 
+
+
+  function getUserCapacity(selectedCustomerEmail) {
+    // Extract email from selectedCustomerEmail
+    const emailMatch = selectedCustomerEmail.match(/\(([^)]+)\)/);
+    const email = emailMatch ? emailMatch[1] : null;
+
+    if (!email) {
+        throw new Error("Invalid email format");
+    }
+
+    // Find the user by email
+    const user = users.find(u => u.email === email);
+    
+    // Return the user's capacity or null if not found
+    return user ? user.capacity : null;
+}
   // Function to get a subscription by ID
   const getSubscriptionById = (id) => {
     const matchedSubscription = subscriptions.find(
@@ -233,19 +251,19 @@ function Customers() {
                 <div>
                 <Button
 
-                 color={`${activeContent === "Shipments"? "success": "warning"}`}
+                 color={`${activeContent === "Shipments"? "warning": "success"}`}
           className="rounded-tl-lg rounded-bl-lg w-[100px]"
                  radius="none"
-                 variant="flat"
+                 variant={`${activeContent === "Shipments"? "solid": "flat"}`}
                   onPress={() => setActiveContent("Shipments")}
                 >
                   Shipments
                 </Button>
                 <Button
          radius="none"
-                variant="flat"
+                variant={`${activeContent === "Invoices"? "solid": "flat"}`}
                 className="rounded-tr-lg rounded-br-lg w-[100px]"
-                color={`${activeContent === "Invoices"? "success": "warning"}`}
+                color={`${activeContent === "Invoices"? "warning": "success"}`}
                   onPress={() => setActiveContent("Invoices")}
                 >
                   Invoices
@@ -254,8 +272,8 @@ function Customers() {
               </div>
 
               {activeContent === "Shipments" && (
-                <div>
-                 
+                <div >
+                 <span className="ml-4 mb-6">Current Caparity: {getUserCapacity(selectedCustomerEmail)}</span>
                   <Shipimo shipments={shipments} email={selectedCustomerEmail}/>
                 </div>
               )}

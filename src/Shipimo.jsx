@@ -32,13 +32,18 @@ function Shipimo({ email,shipments }) {
       const groupedByWeek = {};
 
       filterShip.forEach((shipment) => {
-        // Calculate the week number of the year
         const createdAt = new Date(shipment.createdAt);
-        const week = `${createdAt.getFullYear()}-W${Math.ceil(
-          (createdAt.getDate() + createdAt.getDay()) / 7
-        )}`;
+        
+        // Get the first day of the week (Monday)
+        const firstDayOfWeek = new Date(createdAt);
+        firstDayOfWeek.setDate(createdAt.getDate() - createdAt.getDay() + 1); // Adjust to Monday
+      
+        // Format the date as "DD MMM-YYYY"
+        const options = { day: "2-digit", month: "short", year: "numeric" };
+        const week = `${firstDayOfWeek.toLocaleDateString("en-GB", options).replace(" ", "-")}`;
+      
         const status = shipment.delivery_status;
-
+      
         if (!groupedByWeek[week]) {
           groupedByWeek[week] = {
             week,
@@ -49,9 +54,10 @@ function Shipimo({ email,shipments }) {
             Exception: 0,
           };
         }
-
+      
         groupedByWeek[week][status] += 1;
       });
+      
 
       // Format data for the chart
       const formattedData = Object.values(groupedByWeek);
