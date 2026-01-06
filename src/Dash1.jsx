@@ -33,6 +33,7 @@ function Dash1() {
   ].every((data) => data.length > 0);
 
   return (
+    
     <div className="flex bg-zinc-950 flex-col min-h-screen">
       {/* Show Loading component until all data lengths are not zero */}
       {!isAllDataLoaded ? (
