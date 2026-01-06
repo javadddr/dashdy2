@@ -4,7 +4,7 @@ import { Card, CardHeader, CardBody, Spinner } from "@nextui-org/react"; // Adju
 import { useGlobalContext } from "./GlobalProvider";
 
 function Loading() {
-  const { shipments, users, subscriptions, invoices,subscriptionsreal } = useGlobalContext();
+  const { shipments, users, userEvento, subscriptions, invoices,subscriptionsreal } = useGlobalContext();
 
 
   // Helper function to check if all data is loaded
@@ -14,6 +14,7 @@ function Loading() {
     subscriptions,
     subscriptionsreal,
     invoices,
+    userEvento,
   ].every((data) => data.length > 0);
 
   // Cards data
@@ -23,6 +24,7 @@ function Loading() {
     { title: "Invoices", data: invoices },
     { title: "Shipments", data: shipments },
     { title: "Users", data: users },
+    { title: "Users Events", data: userEvento },
   ];
 
   return (

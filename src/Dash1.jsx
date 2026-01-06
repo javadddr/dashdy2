@@ -19,7 +19,7 @@ import { useGlobalContext } from "./GlobalProvider";
 
 
 function Dash1() {
-  const { shipments, users, subscriptions, invoices,subscriptionsreal } = useGlobalContext();
+  const { shipments, users, subscriptions,userEvento, invoices,subscriptionsreal } = useGlobalContext();
 
 
   // Check if all data is loaded
@@ -29,6 +29,7 @@ function Dash1() {
     subscriptions,
     subscriptionsreal,
     invoices,
+    userEvento,
   ].every((data) => data.length > 0);
 
   return (

@@ -13,7 +13,7 @@ const GlobalProvider = ({ children }) => {
   const [invoices, setInvoices] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [allsubs, setAllsubs] = useState([]);
-
+  const [userEvento, setUserEvento] = useState([]);
 const keyfrom = import.meta.env.VITE_USER_KEY;
 
   // Fetch shipments
@@ -211,6 +211,40 @@ const keyfrom = import.meta.env.VITE_USER_KEY;
     fetchInvoices();
   }, []);
 
+  //Fetch users
+ useEffect(() => {
+  const fetchUserEvents = async () => {
+    try {
+      // Calculate the start date (3 years before today)
+      const today = new Date();
+      const threeYearsAgo = new Date(today);
+      threeYearsAgo.setMonth(today.getMonth() - 36);
+
+      // Set end of today
+      const endOfDay = new Date(today);
+      endOfDay.setHours(23, 59, 59, 999); // Last millisecond of the day
+
+      // Convert dates to timestamps (milliseconds since epoch)
+      const startTimestamp = threeYearsAgo.getTime();
+      const endTimestamp = endOfDay.getTime();
+
+      const response = await fetch(
+        `https://api2.globalpackagetracker.com/user/getAllEvents?start=${startTimestamp}&end=${endTimestamp}`,
+        {
+          headers: { key: import.meta.env.VITE_USER_KEY },
+        }
+      );
+
+      const data = await response.json();
+      setUserEvento(data.events || []);
+    } catch (error) {
+      console.error("Error fetching user events:", error);
+    }
+  };
+
+  fetchUserEvents();
+}, []);
+  
   // Fetch transactions
   useEffect(() => {
     const fetchTransactions = async () => {
@@ -257,6 +291,7 @@ const keyfrom = import.meta.env.VITE_USER_KEY;
         invoices,
         transactions,
         allsubs,
+        userEvento,
       }}
     >
       {children}
