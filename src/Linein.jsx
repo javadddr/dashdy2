@@ -24,7 +24,9 @@ const chartConfig = {
 
 function Linein() {
   const { shipments, users, subscriptions, invoices,subscriptionsreal } = useGlobalContext();
-
+console.log("invoices",invoices)
+console.log("subscriptions",subscriptions)
+console.log("subscriptionsreal",subscriptionsreal)
   const [invoicesFiltered, setInvoicesFiltered] = useState([]);
 
   useEffect(() => {

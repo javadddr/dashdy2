@@ -112,7 +112,7 @@ const keyfrom = import.meta.env.VITE_USER_KEY;
 
       try {
         while (hasMore) {
-          const url = new URL("https://api.stripe.com/v1/customers?limit=100");
+          const url = new URL("https://api.stripe.com/v1/customers?limit=1000");
           if (startingAfter) {
             url.searchParams.append("starting_after", startingAfter);
           }

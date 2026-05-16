@@ -20,8 +20,8 @@ import Subis from "./Subis";
 import CustomerSubscriptionTracker from "./CustomerSubscriptionTracker";
 import CustomerSubscriptionTable from "./CustomerSubscriptionTable";
 import { useGlobalContext } from "./GlobalProvider";
-
-
+import CustomerSubscriptionInvoiceTable from "./CustomerSubscriptionInvoiceTable";
+import CustomerPaymentTimeline from "./CustomerPaymentTimeline";
 function Dash1() {
   const { shipments, users, subscriptions,userEvento, invoices,subscriptionsreal } = useGlobalContext();
 
@@ -45,13 +45,20 @@ function Dash1() {
       ) : (
         <>
          <div className="flex justify-center items-center w-full">
+          <div className="flex flex-col">
             <div className="flex flex-col mb-4">
               <ChatHed />
               <Overall />
               <MessageStackedBarChart />
               <CustomerSubscriptionTracker/>
-              <CustomerSubscriptionTable/>
+              {/* <CustomerSubscriptionTable/>
+              <CustomerSubscriptionInvoiceTable/> */}
+            
               
+            </div>
+            <div>
+            <CustomerPaymentTimeline/>
+            </div>
             </div>
           </div>
           <div className="flex justify-center pt-2 w-full pb-3">

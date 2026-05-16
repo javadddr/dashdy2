@@ -9,12 +9,12 @@ function Loading() {
 
   // Helper function to check if all data is loaded
   const isAllDataLoaded = [
-    shipments,
+    // shipments,
     users,
     subscriptions,
     subscriptionsreal,
     invoices,
-    userEvento,
+    // userEvento,
   ].every((data) => data.length > 0);
 
   // Cards data
@@ -22,9 +22,9 @@ function Loading() {
     { title: "Subscriptions", data: subscriptions },
     { title: "Real Subscriptions", data: subscriptionsreal },
     { title: "Invoices", data: invoices },
-    { title: "Shipments", data: shipments },
+    // { title: "Shipments", data: shipments },
     { title: "Users", data: users },
-    { title: "Users Events", data: userEvento },
+    // { title: "Users Events", data: userEvento },
   ];
 
   return (
