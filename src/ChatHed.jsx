@@ -84,7 +84,7 @@ export default function ChatHed() {
   ];
 
   return (
-    <dl className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4 dark p-7 px-20">
+    <dl className="grid w-full grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4  p-7 px-20">
       {data.map(({ title, value, change, changeType, iconName, trendChipPosition }, index) => (
         <Card key={index} className="border border-transparent dark:border-default-100">
           <div className="flex p-4">

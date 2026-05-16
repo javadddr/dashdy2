@@ -13,8 +13,12 @@ import SubChangeac2 from "./SubChangeac2";
 import ChatHed from "./ChatHed";
 import Overall from "./Overall";
 import Loading from "./Loading";
+import MessageStackedBarChart from "./MessageStackedBarChart";
 import Mrr1 from "./Mrr1";
 import Mrr2 from "./Mrr2";
+import Subis from "./Subis";
+import CustomerSubscriptionTracker from "./CustomerSubscriptionTracker";
+import CustomerSubscriptionTable from "./CustomerSubscriptionTable";
 import { useGlobalContext } from "./GlobalProvider";
 
 
@@ -24,7 +28,7 @@ function Dash1() {
 
   // Check if all data is loaded
   const isAllDataLoaded = [
-    shipments,
+   
     users,
     subscriptions,
     subscriptionsreal,
@@ -34,7 +38,7 @@ function Dash1() {
 
   return (
     
-    <div className="flex bg-zinc-950 flex-col min-h-screen">
+    <div className="flex  flex-col min-h-screen">
       {/* Show Loading component until all data lengths are not zero */}
       {!isAllDataLoaded ? (
         <Loading />
@@ -44,13 +48,18 @@ function Dash1() {
             <div className="flex flex-col mb-4">
               <ChatHed />
               <Overall />
+              <MessageStackedBarChart />
+              <CustomerSubscriptionTracker/>
+              <CustomerSubscriptionTable/>
+              
             </div>
           </div>
-          <div className="flex justify-center pt-2">
+          <div className="flex justify-center pt-2 w-full pb-3">
             <BarCharti />
             <PieCharti />
             <BarDate />
           </div>
+          
           <div className="flex justify-center items-center w-full">
             <div className="flex gap-2 mb-4">
               <Linein />
@@ -78,8 +87,9 @@ function Dash1() {
           
             <Mrr1/>
             </div>
+           
           </div>
-     
+          {/* <Subis/> */}
         </>
       )}
     </div>

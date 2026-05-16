@@ -60,7 +60,7 @@ function TransAmountChart() {
 
   return (
     <div className="text-white">
-      <Card className="dark">
+      <Card className="">
         <CardHeader>
           <CardTitle>Transactions Count</CardTitle>
           <CardDescription>
@@ -94,7 +94,7 @@ function TransAmountChart() {
                 <LabelList
                   dataKey="count"
                   position="top"
-                  fill="#fff"
+                  fill="#070807"
                   fontSize={12}
                   fontWeight="bold"
                 />

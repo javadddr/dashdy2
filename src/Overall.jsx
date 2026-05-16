@@ -56,7 +56,7 @@ function Overall() {
 
   return (
     <div className="text-white">
-      <Card className="dark">
+      <Card className="">
         <CardHeader>
           <CardTitle>User Signup Trends</CardTitle>
           <CardDescription>
@@ -83,7 +83,7 @@ function Overall() {
                 <LabelList
                   dataKey="count"
                   position="top"
-                  fill="#fff"
+                  fill="#070807"
                   fontSize={12}
                   fontWeight="bold"
                 />

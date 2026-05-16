@@ -121,7 +121,7 @@ function Customers() {
       <Table
         classNames={{
           
-          wrapper: "h-[630px] dark",
+          wrapper: "h-[630px] ",
         }}
         aria-label="Stripe Subscriptions Table"
         bottomContent={

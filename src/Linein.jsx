@@ -99,12 +99,12 @@ function Linein() {
 
   return (
     <div className="text-white">
-      <Card className="dark">
-        <CardHeader>
+      <Card className="">
+        <CardHeader >
           <CardTitle>Invoices Count</CardTitle>
           <CardDescription>Number of customers which invoice was created for them (paid_at)</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent >
           <ChartContainer
             config={chartConfig}
             className="max-w-[800px] h-[250px]"
@@ -112,9 +112,9 @@ function Linein() {
             <BarChart
               data={chartData}
               layout="horizontal"
-          
+            
             >
-              <CartesianGrid vertical={false} />
+              <CartesianGrid vertical={false}  />
               <XAxis
                 dataKey="month"
                 tickLine={false}
@@ -122,17 +122,18 @@ function Linein() {
                 axisLine={false}
                 reversed={true}
                 tickFormatter={(value) => formatMonthYear(value)}
+               
               />
                <ChartTooltip
               content={<ChartTooltipContent />}
               cursor={false}
            
             />
-              <Bar dataKey="count" fill="var(--color-count)" radius={4}>
+              <Bar dataKey="count" fill="var(--color-count)" radius={4} >
                 <LabelList
                   dataKey="count"
                   position="top"
-                  fill="#fff"
+                  fill="#070807"
                   fontSize={12}
                   fontWeight="bold"
                 />

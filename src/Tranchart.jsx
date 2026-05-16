@@ -64,7 +64,7 @@ function Tranchart() {
 
   return (
     <div className="text-white">
-      <Card className="dark">
+      <Card className="">
         <CardHeader>
           <CardTitle>Transactions Amount</CardTitle>
           <CardDescription>
@@ -99,7 +99,7 @@ function Tranchart() {
                 <LabelList
                   dataKey="amount"
                   position="top"
-                  fill="#fff"
+                  fill="#070807"
                   fontSize={12}
                   fontWeight="bold"
                   formatter={formatAmount} // Format labels to 0 decimal places

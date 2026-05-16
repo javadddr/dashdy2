@@ -84,7 +84,7 @@ function BarDate() {
   };
 
   return (
-    <Card className="dark w-[350px] ml-2">
+    <Card className=" w-[490px] ml-2">
       <CardHeader>
         <CardTitle className="text-base">Shipments per Month</CardTitle>
         <CardDescription>Shipments' status by month</CardDescription>

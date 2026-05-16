@@ -75,7 +75,7 @@ function BarCharti() {
   };
 
   return (
-    <Card className='dark w-[350px] ml-2'>
+    <Card className=' w-[490px] ml-0'>
       <CardHeader>
         <CardTitle className='text-base'>Shipments' status</CardTitle>
         <CardDescription>One month</CardDescription>

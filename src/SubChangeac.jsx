@@ -25,7 +25,7 @@ function SubChangeac() {
 
   const { shipments, users, subscriptions, invoices,subscriptionsreal,allsubs } = useGlobalContext();
   const [chartData, setChartData] = useState([]);
-
+console.log("subscriptionsreal",subscriptionsreal)
   useEffect(() => {
     if (allsubs && allsubs.length > 0) {
       const activeSubs = allsubs.filter((sub) => sub.status === "active");
