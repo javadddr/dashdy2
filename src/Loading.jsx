@@ -22,9 +22,9 @@ function Loading() {
     { title: "Subscriptions", data: subscriptions },
     { title: "Real Subscriptions", data: subscriptionsreal },
     { title: "Invoices", data: invoices },
-    // { title: "Shipments", data: shipments },
+    { title: "Shipments", data: shipments },
     { title: "Users", data: users },
-    // { title: "Users Events", data: userEvento },
+    { title: "Users Events", data: userEvento },
   ];
 
   return (

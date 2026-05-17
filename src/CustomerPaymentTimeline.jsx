@@ -16,7 +16,6 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
 import { useGlobalContext } from "./GlobalProvider";
 
 // Helper to get month-year from timestamp
@@ -52,6 +51,41 @@ const getAllMonths = (startDate, endDate) => {
   return months;
 };
 
+// Helper to get subscription type from invoice line items
+const getSubscriptionType = (invoices) => {
+  if (!invoices || invoices.length === 0) return 'other';
+  
+  for (const invoice of invoices) {
+    if (invoice.lines?.data) {
+      for (const line of invoice.lines.data) {
+        const interval = line.price?.recurring?.interval;
+        if (interval === 'month') return 'monthly';
+        if (interval === 'quarter') return 'quarterly';
+        if (interval === 'year') return 'yearly';
+      }
+    }
+  }
+  return 'one_time';
+};
+
+// Helper to get color based on subscription type
+const getCellColor = (subscriptionType, hasPaid) => {
+  if (!hasPaid) return 'bg-gray-800/30 text-gray-600 hover:bg-gray-700/50';
+  
+  switch (subscriptionType) {
+    case 'monthly':
+      return 'bg-blue-600/80 text-white font-medium hover:bg-blue-500 hover:scale-105';
+    case 'quarterly':
+      return 'bg-purple-600/80 text-white font-medium hover:bg-purple-500 hover:scale-105';
+    case 'yearly':
+      return 'bg-emerald-600/80 text-white font-medium hover:bg-emerald-500 hover:scale-105';
+    case 'one_time':
+      return 'bg-orange-600/80 text-white font-medium hover:bg-orange-500 hover:scale-105';
+    default:
+      return 'bg-red-600/80 text-white font-medium hover:bg-red-500 hover:scale-105';
+  }
+};
+
 function CustomerPaymentTimeline() {
   const { invoices } = useGlobalContext();
   const [paymentData, setPaymentData] = useState([]);
@@ -74,11 +108,11 @@ function CustomerPaymentTimeline() {
       const paidInvoices = invoicesData.filter(inv => inv.status === 'paid' && inv.amount_paid > 0);
       
       // Group payments by customer email with invoice details
-      const customerPayments = new Map(); // email -> { customerName, payments: Map of month -> [invoices] }
+      const customerPayments = new Map(); // email -> { customerName, payments: Map of month -> [invoices], lastPaymentDate, subscriptionType }
       
       let earliestDate = new Date(2023, 1, 1); // Start from Feb 2023
-let latestDate = new Date(2023, 1, 1); // Start from Feb 2023
-let currentDate = new Date(); // Get current date
+      let latestDate = new Date(2023, 1, 1); // Start from Feb 2023
+      let currentDate = new Date(); // Get current date
       
       paidInvoices.forEach(invoice => {
         const email = invoice.customer_email;
@@ -95,7 +129,9 @@ let currentDate = new Date(); // Get current date
           customerPayments.set(email, {
             customerName: invoice.customer_name || email.split('@')[0],
             email: email,
-            payments: new Map()
+            payments: new Map(),
+            lastPaymentDate: paymentDateObj,
+            subscriptionType: null
           });
         }
         
@@ -104,22 +140,50 @@ let currentDate = new Date(); // Get current date
           customer.payments.set(monthYear, []);
         }
         customer.payments.get(monthYear).push(invoice);
+        
+        // Update last payment date if this is more recent
+        if (paymentDateObj > customer.lastPaymentDate) {
+          customer.lastPaymentDate = paymentDateObj;
+        }
+      });
+      
+      // Determine subscription type for each customer and check if active
+      const currentDateObj = new Date();
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      
+      const customerArray = Array.from(customerPayments.values()).map(customer => {
+        // Get subscription type from their most recent invoices
+        const allInvoices = Array.from(customer.payments.values()).flat();
+        const subscriptionType = getSubscriptionType(allInvoices);
+        customer.subscriptionType = subscriptionType;
+        
+        // Check if customer is active (has payment in last 3 months)
+        const isActive = customer.lastPaymentDate >= threeMonthsAgo;
+        customer.isActive = isActive;
+        
+        return customer;
+      });
+      
+      // Sort customers: Active first, then inactive sorted by last payment date (newest to oldest)
+      const sortedCustomers = customerArray.sort((a, b) => {
+        if (a.isActive && !b.isActive) return -1;
+        if (!a.isActive && b.isActive) return 1;
+        if (!a.isActive && !b.isActive) {
+          return b.lastPaymentDate - a.lastPaymentDate;
+        }
+        return a.email.localeCompare(b.email);
       });
       
       // Include current month even if no invoices
-// Include current month even if no invoices
-// Set end date to current date (including current month)
-const endDate = new Date(currentDate);
-endDate.setMonth(endDate.getMonth() ); // Add one month to ensure current month is included
-endDate.setDate(1); // Set to first day of next month
-
-const months = getAllMonths(earliestDate, endDate);
-setAllMonths(months);
+      const endDate = new Date(currentDate);
+      endDate.setMonth(endDate.getMonth());
+      endDate.setDate(1);
       
-      const paymentArray = Array.from(customerPayments.values())
-        .sort((a, b) => a.email.localeCompare(b.email));
+      const months = getAllMonths(earliestDate, endDate);
+      setAllMonths(months);
       
-      setPaymentData(paymentArray);
+      setPaymentData(sortedCustomers);
       setLoading(false);
     } catch (error) {
       console.error("Error processing invoices:", error);
@@ -179,7 +243,7 @@ setAllMonths(months);
           <CardHeader className="pb-2">
             <CardTitle>Customer Payment Timeline</CardTitle>
             <CardDescription>
-              Monthly payment history - Click on red cells to view invoice details
+              Monthly payment history - Active customers first, then inactive. Click on colored cells to view invoice details
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -205,57 +269,91 @@ setAllMonths(months);
 
                   {/* Data rows */}
                   <div className="divide-y divide-gray-700">
-                    {paymentData.map((customer) => (
-                      <div key={customer.email} className="flex hover:bg-gray-800/30 transition-colors">
-                        {/* Customer info column - sticky */}
-                        <div className="w-[200px] flex-shrink-0 p-1.5 sticky left-0 bg-gray-900 border-r border-gray-700">
-                          <div className="text-[11px] font-medium text-gray-200 truncate" title={customer.email}>
-                            {customer.email}
-                          </div>
-                          {customer.customerName !== customer.email && (
-                            <div className="text-[9px] text-gray-400 truncate">
-                              {customer.customerName}
+                    {paymentData.map((customer) => {
+                      // Find last payment month for inactive customers
+                      let lastPaymentMonth = null;
+                      if (!customer.isActive && customer.lastPaymentDate) {
+                        lastPaymentMonth = getMonthYearFromTimestamp(customer.lastPaymentDate.getTime() / 1000);
+                      }
+                      
+                      return (
+                        <div key={customer.email} className="flex hover:bg-gray-800/30 transition-colors">
+                          {/* Customer info column - sticky */}
+                          <div className="w-[200px] flex-shrink-0 p-1.5 sticky left-0 bg-gray-900 border-r border-gray-700">
+                            <div className="text-[11px] font-medium text-gray-200 truncate" title={customer.email}>
+                              {customer.email}
+                              {!customer.isActive && (
+                                <span className="ml-1 text-[9px] text-gray-400">
+                                  (Stopped: {formatMonthHeader(lastPaymentMonth)})
+                                </span>
+                              )}
                             </div>
-                          )}
-                        </div>
-                        
-                        {/* Payment cells */}
-                        <div className="flex">
-                          {allMonths.map((month) => {
-                            const invoicesInMonth = customer.payments.get(month);
-                            const hasPaid = invoicesInMonth && invoicesInMonth.length > 0;
-                            return (
-                              <div
-                                key={`${customer.email}-${month}`}
-                                onClick={() => hasPaid && handleCellClick(customer, month, invoicesInMonth)}
-                                className={`w-[30px] flex-shrink-0 p-1.5 text-center text-[9px] border-r border-gray-700 transition-all cursor-pointer ${
-                                  hasPaid
-                                    ? 'bg-red-600/80 text-white font-medium hover:bg-red-500 hover:scale-105'
-                                    : 'bg-gray-800/30 text-gray-600 hover:bg-gray-700/50'
-                                }`}
-                                title={hasPaid ? `${invoicesInMonth.length} payment(s) in ${formatMonthHeader(month)} - Click to view` : `No payment in ${formatMonthHeader(month)}`}
-                              >
-                                {hasPaid ? invoicesInMonth.length : '—'}
+                            {customer.customerName !== customer.email && (
+                              <div className="text-[9px] text-gray-400 truncate">
+                                {customer.customerName}
                               </div>
-                            );
-                          })}
+                            )}
+                            <div className="text-[8px] text-gray-500 mt-0.5">
+                              {customer.subscriptionType === 'monthly' && '📅 Monthly'}
+                              {customer.subscriptionType === 'quarterly' && '📆 Quarterly'}
+                              {customer.subscriptionType === 'yearly' && '📅 Yearly'}
+                              {customer.subscriptionType === 'one_time' && '⚡ One Time'}
+                              {customer.subscriptionType === 'other' && '📦 Other'}
+                            </div>
+                          </div>
+                          
+                          {/* Payment cells */}
+                          <div className="flex">
+                            {allMonths.map((month) => {
+                              const invoicesInMonth = customer.payments.get(month);
+                              const hasPaid = invoicesInMonth && invoicesInMonth.length > 0;
+                              const cellColor = getCellColor(customer.subscriptionType, hasPaid);
+                              
+                              return (
+                                <div
+                                  key={`${customer.email}-${month}`}
+                                  onClick={() => hasPaid && handleCellClick(customer, month, invoicesInMonth)}
+                                  className={`w-[30px] flex-shrink-0 p-1.5 text-center text-[9px] border-r border-gray-700 transition-all cursor-pointer ${cellColor}`}
+                                  title={
+                                    hasPaid 
+                                      ? `${invoicesInMonth.length} payment(s) in ${formatMonthHeader(month)} (${customer.subscriptionType}) - Click to view` 
+                                      : `No payment in ${formatMonthHeader(month)}`
+                                  }
+                                >
+                                  {hasPaid ? invoicesInMonth.length : '—'}
+                                </div>
+                              );
+                            })}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
               </div>
             </div>
             
             {/* Legend */}
-            <div className="mt-3 flex items-center gap-3 text-[10px]">
+            <div className="mt-3 flex items-center gap-3 text-[10px] flex-wrap">
               <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 bg-red-600/80 rounded"></div>
-                <span className="text-gray-300">Has payment (click for details)</span>
+                <div className="w-3 h-3 bg-blue-600/80 rounded"></div>
+                <span className="text-gray-900 font-bold text-[12px]">Monthly Subscription</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-purple-600/80 rounded"></div>
+                <span className="text-gray-900 font-bold text-[12px]">Quarterly Subscription</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-emerald-600/80 rounded"></div>
+                <span className="text-gray-900 font-bold text-[12px]">Yearly Subscription</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <div className="w-3 h-3 bg-orange-600/80 rounded"></div>
+                <span className="text-gray-900 font-bold text-[12px]">One Time Payment</span>
               </div>
               <div className="flex items-center gap-1.5">
                 <div className="w-3 h-3 bg-gray-800/30 rounded"></div>
-                <span className="text-gray-300">No payment</span>
+                <span className="text-gray-900 font-bold text-[12px]">No Payment</span>
               </div>
               <div className="text-gray-400 text-[9px] ml-auto">
                 Customers: {paymentData.length} | Months: {allMonths.length}
